@@ -1,15 +1,17 @@
 import { test, expect } from '@playwright/test';
-import { SauceDemoObjects } from '../src/pages/SauceDemoObjects';
+import { SauceDemoObjects } from '../../src/pages/SauceDemoObjects';
 
-test.beforeEach(async ({ page }) => {
-  const sauceDemo = new SauceDemoObjects(page);
-  await sauceDemo.navigateTo(sauceDemo.sauceDemoUrl); 
-  await sauceDemo.usernameInput.fill(sauceDemo.username);
-  await sauceDemo.passwordInput.fill(sauceDemo.password);
-  await sauceDemo.loginButton.click();
 
-  await expect(page).toHaveURL(sauceDemo.inventoryUrl);
-});
+// End to End tests
+test.describe('Authenticated SauceDemo Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    const sauceDemo = new SauceDemoObjects(page);
+    await sauceDemo.navigateTo(sauceDemo.sauceDemoUrl); 
+    await sauceDemo.usernameInput.fill(sauceDemo.username);
+    await sauceDemo.passwordInput.fill(sauceDemo.password);
+    await sauceDemo.loginButton.click();
+    await expect(page).toHaveURL(sauceDemo.inventoryUrl);
+  });
 
 test('Order Sauce Labs Bolt T-Shirt', async ({ page }) => {
   const sauceDemo = new SauceDemoObjects(page);
@@ -28,8 +30,23 @@ test('Order Sauce Labs Bolt T-Shirt', async ({ page }) => {
   await sauceDemo.finishButton.click();
   //Check if the order is complete
   await expect(page.locator('.complete-header')).toHaveText('Thank you for your order!');
-  await sauceDemo.takeScreenshot('Order_Completion');
-  
-
+  await sauceDemo.takeScreenshot('Order_Complete');
+  await expect(page).toHaveURL(sauceDemo.checkoutCompleteUrl);
+});
 });
   
+// Login tests
+test.describe('Login Tests', () => {
+  test('Locked out user', async ({ page }) => {
+    const sauceDemo = new SauceDemoObjects(page);
+    await sauceDemo.navigateTo(sauceDemo.sauceDemoUrl);
+    await sauceDemo.usernameInput.fill(sauceDemo.lockedOutUsername);
+    await sauceDemo.passwordInput.fill(sauceDemo.password);
+    await sauceDemo.loginButton.click();
+    
+    // Wait for and verify error message
+    await sauceDemo.errorMessage.waitFor();
+    await expect(sauceDemo.errorMessage).toHaveText('Epic sadface: Sorry, this user has been locked out.');
+    await sauceDemo.takeScreenshot('Locked_Out_User');
+  });
+});
