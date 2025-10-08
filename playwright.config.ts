@@ -41,14 +41,24 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        // CI optimizations
+        launchOptions: {
+          args: process.env.CI ? [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage'
+          ] : []
+        }
+      },
     },
 
-    
-     {
-       name: 'firefox',
-       use: { ...devices['Desktop Firefox'] },
-     },
+    // Disable other browsers for now - enable when tests are cross-browser ready
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
     // {
     //   name: 'webkit',
