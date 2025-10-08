@@ -44,11 +44,11 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    // Uncomment these when you're ready to test on multiple browsers
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    
+     {
+       name: 'firefox',
+       use: { ...devices['Desktop Firefox'] },
+     },
 
     // {
     //   name: 'webkit',
