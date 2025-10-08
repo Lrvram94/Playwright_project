@@ -1,5 +1,8 @@
 name: Playwright Tests
 
+name: Install Playwright Browsers
+run: npx playwright install
+
 on:
   push:
     branches: [ main, develop ]
