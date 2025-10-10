@@ -5,18 +5,28 @@ A TypeScript-based Playwright automation framework using the Page Object Model p
 ## Project Structure
 
 ```
-├── .github/workflows/  # CI/CD workflows
+├── .github/workflows/     # CI/CD workflows
 ├── src/
-│   ├── pages/         # Page Object Model classes
-│   ├── utils/         # Utility functions
-│   ├── data/          # Test data
-│   └── config/        # Configuration files
+│   ├── pages/            # Page Object Model classes
+│   │   ├── BasePage.ts   # Base page with common functionality
+│   │   ├── SauceDemoObjects.ts # SauceDemo page objects
+│   │   └── TradeMeObjects.ts   # TradeMe page objects
+│   ├── utils/            # Utility functions and test helpers
+│   │   └── test-utils.ts # Common test utilities
+│   ├── data/             # Centralized test data
+│   │   └── test-data.ts  # URLs, credentials, test data
+│   └── config/           # Environment configuration
+│       └── config.ts     # Timeouts, settings, environment config
 ├── tests/
-│   └── ui tests/      # UI automation tests
-├── playwright.config.ts
-└── package.json
+│   └── ui tests/         # UI automation test specs
+│       ├── SauceDemo.test.ts  # E-commerce automation tests
+│       └── TradeMe.test.ts    # Marketplace automation tests
+├── test-results/         # Test execution results
+├── playwright-report/    # HTML test reports
+├── playwright.config.ts  # Playwright configuration
+├── package.json          # Dependencies and scripts
+└── README.md            # This file
 ```
-
 ## Features
 
 - **Page Object Model** - Maintainable test structure
