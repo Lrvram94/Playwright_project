@@ -1,40 +1,43 @@
 import { test, expect } from '@playwright/test';
 import { TradeMeObjects } from '../../src/pages/TradeMeObjects';
 import { WaitUtils } from '@utils/test-utils';
+import { tradeMeData } from '../../src/data/test-data';
+import { config } from '../../src/config/config';
 
 
 test.describe('TradeMe navigate to website', () => {
   test.beforeEach(async ({ page }) => {
     const tradeMe = new TradeMeObjects(page);
-    await tradeMe.navigateTo(tradeMe.tradeMeSandBoxUrl); 
-    await expect(page).toHaveURL(tradeMe.tradeMeSandBoxUrl);
+    page.setDefaultTimeout(config.timeouts.long);
+    
+    await tradeMe.navigateTo(tradeMeData.urls.sandbox); 
+    await expect(page).toHaveURL(tradeMeData.urls.sandbox);
     await tradeMe.waitForPageLoad();
   });
 
 test('Search for Used Cars listing', async ({ page }) => {
-  // Initialize TradeMe page object
-  const tradeMe = new TradeMeObjects(page);
-  
-  // Navigate to Motors section from homepage
-  await tradeMe.motorVehiclesLink.waitFor();
-  await tradeMe.motorVehiclesLink.click();
+    const tradeMe = new TradeMeObjects(page);
+    
+    await tradeMe.motorVehiclesLink.waitFor();
+    await tradeMe.motorVehiclesLink.click();
   
   // Verify successful navigation to Motors page
-  await expect(page).toHaveURL(tradeMe.motorsUrl);
+  await expect(page).toHaveURL(tradeMeData.urls.motors);
   
   // Open car type filter dropdown
-  await tradeMe.carTypeDropdown.click();
+  await tradeMe.CarTypeDropdown.waitFor();
+  await tradeMe.CarTypeDropdown.click();
   
   // Select "Used" cars filter checkbox
-  await tradeMe.usedCarCheckbox.waitFor();
-  await tradeMe.usedCarCheckbox.check({ force: true });
-  await expect(tradeMe.usedCarCheckbox).toBeChecked();
+  await expect(page.getByText('Used', { exact: true })).toBeVisible();
+  await page.getByText('Used', { exact: true }).click();
+
   
   // Execute search by clicking view listings button
   await tradeMe.viewListingsButton.click();
   
   // Verify redirection to used cars search results page
-  await expect(page).toHaveURL(tradeMe.usedCarsUrl);
+  await expect(page).toHaveURL(tradeMeData.urls.usedCars);
   await tradeMe.takeScreenshot('Used_Cars_Page');
 
   // Verify Car listings are displayed

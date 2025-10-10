@@ -18,13 +18,10 @@ export class TradeMeObjects extends BasePage {
         return this.page.locator('.tm-homepage-search-header__vertical-links-link', { hasText: 'Motors'}); 
     }
     
-    get carTypeDropdown(): Locator { 
-        return this.page.locator('.tm-motors-search-bar__dropdown-multi-select', { hasText: 'All cars' });
+    get CarTypeDropdown(): Locator { 
+        return this.page.locator('span.tm-motors-search-bar__dropdown-multi-select-text', { hasText: 'All cars' });
     }
-    
-    get usedCarCheckbox(): Locator {
-        return this.page.locator('tg-checkbox').filter({ hasText: 'Used' }).locator('input[type="checkbox"]');
-   }  
+     
     get viewListingsButton(): Locator { 
         return this.page.locator('button:has-text("View listings")');
     }
