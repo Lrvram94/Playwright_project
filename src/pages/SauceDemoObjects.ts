@@ -5,20 +5,7 @@ export class SauceDemoObjects extends BasePage {
    constructor(public readonly page: Page) {
       super(page);
    }
-  // SauceDemo URL'S
-  get sauceDemoUrl(): string { return 'https://www.saucedemo.com/'; }
-  get inventoryUrl(): string { return 'https://www.saucedemo.com/inventory.html'; }
-  get cartUrl(): string { return 'https://www.saucedemo.com/cart.html'; }
-  get checkoutOverviewUrl(): string { return 'https://www.saucedemo.com/checkout-step-two.html'; }
-  get checkoutCompleteUrl(): string { return 'https://www.saucedemo.com/checkout-complete.html'; }
-  
-  
-  // SauceDemo  Credentials
-  get username(): string { return 'standard_user'; }
-  get password(): string { return 'secret_sauce'; }
-  get lockedOutUsername(): string { return 'locked_out_user'; }
-
-
+ 
   // SauceDemo Page Locators
   get usernameInput(): Locator { return this.page.locator('#user-name'); }
   get passwordInput(): Locator { return this.page.locator('#password'); }

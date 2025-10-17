@@ -31,6 +31,7 @@ export const tradeMeData = {
   urls: {
     sandbox: 'https://www.tmsandbox.co.nz/a/',
     motors: 'https://www.tmsandbox.co.nz/a/motors',
-    usedCars: 'https://www.tmsandbox.co.nz/a/motors/cars/search?vehicle_condition=used'
+    usedCars: 'https://www.tmsandbox.co.nz/a/motors/cars/search?vehicle_condition=used',
+    rentalPropertiesUrl : 'https://www.tmsandbox.co.nz/a/property/residential/rent'
   }
 };

@@ -57,7 +57,7 @@ test('Search for Rental houses listing in Lower Hutt', async ({ page }) => {
   await tradeMe.rentalPropertiesLink.waitFor();
   await tradeMe.rentalPropertiesLink.click();
   // Verify successful navigation to Rental Properties page
-  await expect(page).toHaveURL(tradeMe.rentalPropertiesUrl);
+  await expect(page).toHaveURL(tradeMeData.urls.rentalPropertiesUrl);
   // Select Wellington region from region dropdown
   await tradeMe.regionDropdown.click();
   await tradeMe.regionDropdown.selectOption({ label: 'Wellington' });
