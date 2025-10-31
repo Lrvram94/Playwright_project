@@ -55,15 +55,6 @@ export default defineConfig({
       },
     },
 
-    // API Tests - JSONPlaceholder
-    {
-      name: 'api-jsonplaceholder',
-      use: {
-        baseURL: 'https://jsonplaceholder.typicode.com',
-      },
-      testMatch: '**/api tests/jsonplaceholder/**/*.spec.ts',
-    },
-
     // Disable other browsers for now - enable when tests are cross-browser ready
     // {
     //   name: 'firefox',

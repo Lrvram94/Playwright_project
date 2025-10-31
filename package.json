@@ -1,7 +1,7 @@
 {
   "name": "playwright-automation",
   "version": "1.0.0",
-  "description": "UI and API automation testing with Playwright and TypeScript",
+  "description": "UI automation testing with Playwright and TypeScript",
   "main": "index.js",
   "scripts": {
     "test": "playwright test",

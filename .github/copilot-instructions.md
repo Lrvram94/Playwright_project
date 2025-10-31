@@ -1,97 +1,157 @@
-# Playwright UI Automation Project - AI Assistant Guide
+# Playwright UI Automation - AI Agent Guide
 
-## Project Architecture
+## Architecture Overview
 
-This is a TypeScript-based Playwright automation framework using the Page Object Model pattern. The project follows a layered architecture with clear separation of concerns:
+TypeScript + Playwright framework using **strict Page Object Model** with layered architecture:
 
-- **Pages Layer** (`src/pages/`): Page objects extending `BasePage` class
-- **Utils Layer** (`src/utils/`): Reusable utilities for browser operations and waits
-- **Data Layer** (`src/data/`): Test data interfaces and constants
-- **Config Layer** (`src/config/`): Environment and execution configurations
-- **Tests Layer** (`tests/`): Test specifications organized by functionality
+```
+src/
+├── pages/          # Page objects (extend BasePage) - locators as getters
+├── data/           # Centralized test data - app-specific modules
+├── config/         # Environment configs with app namespaces
+└── utils/          # Reusable test utilities
+tests/
+└── ui-tests/       # Test specs with beforeEach hooks
+```
 
-## Key Patterns & Conventions
+**Critical Pattern**: All page objects extend `BasePage` and expose **Locator objects via getter methods**, never strings. Tests interact through page objects, never direct `page.locator()` calls.
 
-### Page Object Structure
-All page objects extend `BasePage` and use getter methods for both locators and URLs:
+## Page Object Pattern (MANDATORY)
+
 ```typescript
-export class YourPage extends BasePage {
-  // URLs as getters
-  get baseUrl(): string { return 'https://example.com'; }
+// src/pages/YourAppObjects.ts
+import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
+
+export class YourAppObjects extends BasePage {
+  constructor(public readonly page: Page) {
+    super(page);
+  }
   
-  // Locators as getters returning Locator objects
+  // ALL locators as getters returning Locator objects
   get submitButton(): Locator { return this.page.locator('#submit'); }
+  get emailInput(): Locator { return this.page.locator('#email'); }
 }
 ```
 
-### Test Organization
-- Use `test.beforeEach()` for common setup (login, navigation)
-- Organize tests in subdirectories under `tests/` (e.g., `tests/ui tests/`)
-- Follow the pattern: setup → action → assertion
+**Why**: Enables IntelliSense, type safety, and reusable locators. See `src/pages/SauceDemoObjects.ts` for reference.
 
-### Locator Strategy
-- Prefer ID selectors (`#element-id`) over other strategies
-- Use Playwright's `Locator` objects, not string selectors in assertions
-- Chain locators for better readability: `page.locator('.container').locator('.item')`
+## Test Data Architecture
 
-## Development Workflows
+Organize by application domain in `src/data/test-data.ts`:
 
-### Running Tests
-```bash
-npm test                    # All tests in parallel
-npm run test:headed         # Visual debugging
-npm run test:debug          # Step-through debugging
-npm run test:ui             # Interactive UI mode
-```
-
-### Test Development Process
-1. Create page object in `src/pages/` extending `BasePage`
-2. Define URLs and locators as getter methods
-3. Add test data to `src/data/test-data.ts` if needed
-4. Write test spec in appropriate `tests/` subdirectory
-5. Use `npm run test:codegen` to record new interactions
-
-### Debugging & Reporting
-- Screenshots automatically saved to `test-results/screenshots/` on failure
-- HTML reports in `playwright-report/index.html`
-- Test results exported to both JSON and XML formats in `test-results/`
-
-## Configuration Details
-
-### Playwright Config (`playwright.config.ts`)
-- **Default Browser**: Chromium only (Firefox/Safari commented out)
-- **Parallel Execution**: Enabled for local, disabled for CI
-- **Failure Handling**: Screenshots, videos, and traces on failure/retry
-- **Timeouts**: 30s for actions and navigation
-
-### TypeScript Setup
-- Strict mode enabled in `tsconfig.json`
-- Target ES2020 with CommonJS modules
-- Source maps enabled for debugging
-
-## Critical File Patterns
-
-### BasePage Utilities
-The `BasePage` class provides standardized methods:
-- Navigation: `navigateTo()`, `waitForPageLoad()`
-- Interactions: `clickElement()`, `fillInput()`, `getText()`
-- Waits: `waitForElement()` with configurable timeout
-- Screenshots: `takeScreenshot()` with timestamp naming
-
-### Test Data Structure
-Use interfaces for type safety and organize by domain:
 ```typescript
-export interface TestUser {
-  username: string;
-  password: string;
-  email: string;
-  role: 'admin' | 'user' | 'guest';
-}
+export const yourAppData = {
+  urls: { base: '...', checkout: '...' },
+  credentials: { admin: { username: '...', password: '...' } },
+  messages: { success: '...' }  // Expected UI text
+};
 ```
 
-## Anti-Patterns to Avoid
+**Pattern from SauceDemo**: Group URLs, credentials, checkout info, and expected messages per app. Tests import via `import { sauceDemoData } from '../../src/data/test-data'`.
 
-- Don't use `page.click()` directly in tests - use page object methods
-- Avoid hardcoded waits (`page.waitForTimeout()`) - use condition-based waits
-- Don't put test data directly in test files - centralize in `src/data/`
-- Avoid string selectors in assertions - use `Locator` objects
+## Test Structure Convention
+
+```typescript
+import { test, expect } from '@playwright/test';
+import { YourAppObjects } from '../../src/pages/YourAppObjects';
+import { yourAppData } from '../../src/data/test-data';
+
+test.describe('Feature Name', () => {
+  test.beforeEach(async ({ page }) => {
+    const app = new YourAppObjects(page);
+    await app.navigateTo(yourAppData.urls.base);
+    // Common setup (login, etc.)
+  });
+
+  test('Action description', async ({ page }) => {
+    const app = new YourAppObjects(page);
+    await app.submitButton.click();  // Use page object getters
+    await expect(page).toHaveURL(yourAppData.urls.expected);
+  });
+});
+```
+
+**Key Points**:
+- Use `test.beforeEach()` for repeated setup (login flows)
+- Instantiate page objects in both `beforeEach` and tests
+- Use `expect(page)` for navigation checks, `expect(locator)` for element assertions
+
+## BasePage Utilities (src/pages/BasePage.ts)
+
+Standard methods available to all page objects:
+
+```typescript
+// Navigation with fallback strategy
+await navigateTo(url)          // Goes to URL with domcontentloaded + networkidle fallback
+await waitForPageLoad()        // Smart wait: domcontentloaded → networkidle (5s timeout)
+
+// Locator-based interactions (15s timeout)
+await clickElement(locator)    // Waits then clicks
+await fillInput(locator, text) // Waits then fills
+await getText(locator)         // Returns text content
+
+// Screenshots with timestamps
+await takeScreenshot('name')   // Saves to test-results/screenshots/name-{timestamp}.png
+```
+
+**Navigation Strategy**: `waitForPageLoad()` tries `networkidle` with 5s timeout, falls back to `domcontentloaded` for sandbox environments (see TradeMe tests).
+
+## Running Tests
+
+```bash
+npm test                  # All tests in parallel (local)
+npm run test:headed       # Visual debugging
+npm run test:ui           # Interactive Playwright UI mode
+npm run test:debug        # Step-through with DevTools
+npm run test:codegen      # Record interactions for new tests
+```
+
+**CI Behavior**: Single worker, 2 retries, no parallel execution (`playwright.config.ts` L15-16).
+
+## Configuration Patterns
+
+### Environment Config (src/config/config.ts)
+Multi-environment support per app:
+
+```typescript
+config.apps.sauceDemo.dev    // App-specific URLs
+config.timeouts.medium       // 15000ms
+config.browsers.headless     // Controlled via HEADLESS env var
+```
+
+Use for: Dynamic environment switching, shared timeout values.
+
+### Playwright Config (playwright.config.ts)
+- **Projects**: Chromium only (Firefox/Safari commented out L62-69)
+- **Reporters**: HTML + JSON (`test-results/results.json`) + JUnit XML
+- **CI Args**: `--no-sandbox`, `--disable-setuid-sandbox` for Chromium (L46-51)
+
+## Development Workflow
+
+1. **Create Page Object**: Extend `BasePage`, add locators as getters
+2. **Add Test Data**: Create app module in `test-data.ts` (urls, credentials, messages)
+3. **Write Test Spec**: Use `beforeEach` for setup, import page objects and data
+4. **Codegen First Pass**: Run `npm run test:codegen` to generate locators
+5. **Refactor**: Move locators to page object, extract data to test-data module
+
+## Common Pitfalls
+
+❌ **DON'T**: `await page.locator('#button').click()` in tests  
+✅ **DO**: Define `get submitButton(): Locator` in page object, use `await app.submitButton.click()`
+
+❌ **DON'T**: `await expect(page.locator('.msg')).toHaveText('Success')`  
+✅ **DO**: `get successMsg(): Locator` + `await expect(app.successMsg).toHaveText(yourAppData.messages.success)`
+
+❌ **DON'T**: `await page.waitForTimeout(3000)`  
+✅ **DO**: `await app.element.waitFor()` or `await app.waitForPageLoad()`
+
+❌ **DON'T**: Hardcode URLs/credentials in tests  
+✅ **DO**: Reference `yourAppData.urls.base` and `yourAppData.credentials.admin`
+
+## Project-Specific Notes
+
+- **Test Directory**: All tests in `tests/ui-tests/` (space in dirname intentional)
+- **Screenshot Naming**: Use descriptive names with underscores (e.g., `'Order_Complete'`)
+- **Locator Preference**: ID selectors first, then data-test attributes, then CSS
+- **TypeScript**: Strict mode enabled - handle nullable types (e.g., `textContent() || ''`)
