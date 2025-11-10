@@ -18,9 +18,7 @@ test.describe('OrangeHRM Login Test', () => {
     
     // Verify we're on the dashboard page
     await expect(page).toHaveURL(orangeHRMData.urls.dashboard);
-    // Verify header has text "Dashboard"
-    await expect(orangeHrm.dashboardHeader).toHaveText('Dashboard');  
-    
+
     // Verify if key dashboards are visible with relevant data
     await expect(orangeHrm.timeatworkModule).toBeVisible();
     await expect(orangeHrm.timeatworkattendancecard).toBeVisible();

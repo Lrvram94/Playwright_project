@@ -13,7 +13,6 @@ export class OrangeHrmObjects extends BasePage {
   get loginErrorMessage(): Locator { return this.page.locator('.oxd-alert-content'); }
   
   // Dashboard Page Locators
-  get dashboardHeader(): Locator { return this.page.getByRole('heading', { name: 'Dashboard' }); }
   get timeatworkModule(): Locator { return this.page.getByText('Time at Work', { exact: true }); }
   get timeatworkattendancecard(): Locator { return this.page.locator('.orangehrm-attendance-card-bar'); } 
   get myaccountMenu(): Locator { return this.page.getByText('My Actions', { exact: true }); }
