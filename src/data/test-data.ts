@@ -1,4 +1,4 @@
-// SauceDemo specific test data - only data actually used in tests
+// SauceDemo specific test data
 export const sauceDemoData = {
   urls: {
     base: 'https://www.saucedemo.com/',
@@ -26,7 +26,7 @@ export const sauceDemoData = {
   }
 };
 
-// TradeMe specific test data - only the URLs actually used in tests
+// TradeMe specific test data
 export const tradeMeData = {
   urls: {
     sandbox: 'https://www.tmsandbox.co.nz/a/',
@@ -34,4 +34,16 @@ export const tradeMeData = {
     usedCars: 'https://www.tmsandbox.co.nz/a/motors/cars/search?vehicle_condition=used',
     rentalPropertiesUrl : 'https://www.tmsandbox.co.nz/a/property/residential/rent'
   }
+};
+
+// OrangeHRM specific test data
+export const orangeHRMData = {
+  urls: {
+    demo: 'https://opensource-demo.orangehrmlive.com/',
+    dashboard: 'https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index'
+  },
+
+  credentials : {
+    admin: { username: 'Admin', password: 'admin123' }
+}
 };
