@@ -1,3 +1,5 @@
+import { NewEmployeeDataGenerator } from '../utils/dataGenerator';
+
 // SauceDemo specific test data
 export const sauceDemoData = {
   urls: {
@@ -40,10 +42,16 @@ export const tradeMeData = {
 export const orangeHRMData = {
   urls: {
     demo: 'https://opensource-demo.orangehrmlive.com/',
-    dashboard: 'https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index'
+    dashboard: 'https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index',
+    addEmployee: 'https://opensource-demo.orangehrmlive.com/web/index.php/pim/addEmployee'
   },
 
   credentials : {
     admin: { username: 'Admin', password: 'admin123' }
-}
+},
+ 
+ // Method to generate random employee data
+  generateRandomEmployee: () => NewEmployeeDataGenerator.generateRandomEmployee()
 };
+
+

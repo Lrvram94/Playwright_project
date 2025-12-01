@@ -10,13 +10,13 @@ export class OrangeHrmObjects extends BasePage {
   get usernameInput(): Locator { return this.page.locator('input[name="username"]'); }
   get passwordInput(): Locator { return this.page.locator('input[name="password"]'); }
   get loginButton(): Locator { return this.page.locator('button[type="submit"]'); }
-  get loginErrorMessage(): Locator { return this.page.locator('.oxd-alert-content'); }
   
   // Dashboard Page Locators
   get timeatworkModule(): Locator { return this.page.getByText('Time at Work', { exact: true }); }
   get timeatworkattendancecard(): Locator { return this.page.locator('.orangehrm-attendance-card-bar'); } 
   get myaccountMenu(): Locator { return this.page.getByText('My Actions', { exact: true }); }
   get quickLaunchModule(): Locator { return this.page.getByText('Quick Launch', { exact: true }); }
+  get pimMenu(): Locator { return this.page.getByText('PIM', { exact: true }); }
   
   // Employee Distribution by Sub Unit locators
   get employeeDistributionContainer(): Locator { return this.page.locator('.oxd-sheet').filter({ hasText: 'Employee Distribution by Sub Unit' }); }
@@ -34,5 +34,13 @@ export class OrangeHrmObjects extends BasePage {
       return false;
     }
   }
+  // PIM Page Locators
+  get employeeListMenu(): Locator { return this.page.getByText('Employee List', { exact: true }); }
+  get addEmployeeButton(): Locator { return this.page.getByRole('button', { name: 'Add' }) }
+  get firstNameInput(): Locator { return this.page.getByRole('textbox', { name: 'First Name' }) }
+  get middleNameInput(): Locator { return this.page.getByRole('textbox', { name: 'Middle Name' }) }
+  get lastNameInput(): Locator { return this.page.getByRole('textbox', { name: 'Last Name' }) }
+  get employeeIdInput(): Locator { return this.page.locator('.oxd-input.oxd-input--active').nth(1) }
+  get saveEmployeeButton(): Locator { return this.page.getByRole('button', { name: 'Save' })}
+  get searchButton(): Locator { return this.page.getByRole('button', { name: 'Search' })}
 }
-  

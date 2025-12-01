@@ -33,4 +33,28 @@ test.describe('OrangeHRM Login Test', () => {
     // Take screenshot for verification
     await orangeHrm.takeScreenshot('Dashboard_After_Login');
   });
+
+  test('Add new employee and verify in employee list', async ({ page }) => {
+    const orangeHrm = new OrangeHrmObjects(page);
+    // Generate random employee data
+    const randomEmployee = orangeHRMData.generateRandomEmployee();
+    
+    // Navigate to PIM module
+    await orangeHrm.pimMenu.click();
+    await orangeHrm.addEmployeeButton.click();
+    await expect(page).toHaveURL(orangeHRMData.urls.addEmployee);
+    
+    // Fill in employee details
+    await orangeHrm.firstNameInput.fill(randomEmployee.firstName);
+    await orangeHrm.middleNameInput.fill(randomEmployee.middleName);
+    await orangeHrm.lastNameInput.fill(randomEmployee.lastName);
+    
+    // Save employee
+    await orangeHrm.saveEmployeeButton.click();
+    await orangeHrm.waitForPageLoad();
+    
+    // Verify employee was saved by checking we're on the Personal Details page
+    await expect(page.getByRole('heading', { name: 'Personal Details' })).toBeVisible({ timeout: 10000 });
+    console.log(`Employee ${randomEmployee.firstName} ${randomEmployee.middleName} ${randomEmployee.lastName} has been successfully created`);
+  });
 });
