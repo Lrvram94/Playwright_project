@@ -54,7 +54,7 @@ test.describe('OrangeHRM Login Test', () => {
     await orangeHrm.waitForPageLoad();
     
     // Verify employee was saved by checking we're on the Personal Details page
-    await expect(page.getByRole('heading', { name: 'Personal Details' })).toBeVisible({ timeout: 10000 });
+    await expect(orangeHrm.personalDetailsHeading).toBeVisible({ timeout: 10000 });
     console.log(`Employee ${randomEmployee.firstName} ${randomEmployee.middleName} ${randomEmployee.lastName} has been successfully created`);
   });
 });

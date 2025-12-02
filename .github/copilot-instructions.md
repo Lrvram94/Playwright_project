@@ -1,5 +1,18 @@
 # Playwright UI Automation - AI Agent Guide
 
+## 🚨 IMPORTANT: Code Modification Policy
+
+**NEVER edit, modify, or create code files without explicit user approval when operating in agent mode.**
+
+When the user requests changes:
+1. **Explain the "why"**: Describe what changes you would make and **why this particular code is needed**
+2. Show the code snippets that would be affected
+3. Explain the purpose and benefit of each change
+4. Wait for user confirmation before proceeding
+5. Only make changes after receiving explicit "yes", "go ahead", or similar approval
+
+**Exception**: You may answer questions, provide suggestions, run tests, and read files without asking permission.
+
 ## Architecture Overview
 
 TypeScript + Playwright framework using **strict Page Object Model** with layered architecture:

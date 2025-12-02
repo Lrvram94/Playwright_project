@@ -22,6 +22,7 @@ test('Order Sauce Labs Bolt T-Shirt', async ({ page }) => {
   await expect(page).toHaveURL(sauceDemoData.urls.cart);
   await sauceDemo.checkoutButton.click();
   await expect(page).toHaveURL(sauceDemoData.urls.checkout);
+  
   // Fill in checkout information using test data
   await sauceDemo.firstNameInput.fill(sauceDemoData.checkoutInfo.firstName);
   await sauceDemo.lastNameInput.fill(sauceDemoData.checkoutInfo.lastName);
@@ -29,6 +30,7 @@ test('Order Sauce Labs Bolt T-Shirt', async ({ page }) => {
   await sauceDemo.continueButton.click();
   await expect(page).toHaveURL(sauceDemoData.urls.checkoutOverview);
   await sauceDemo.finishButton.click();
+  
   //Check if the order is complete using test data
   await expect(page.locator('.complete-header')).toHaveText(sauceDemoData.messages.orderComplete);
   await sauceDemo.takeScreenshot('Order_Complete');

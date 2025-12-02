@@ -43,4 +43,5 @@ export class OrangeHrmObjects extends BasePage {
   get employeeIdInput(): Locator { return this.page.locator('.oxd-input.oxd-input--active').nth(1) }
   get saveEmployeeButton(): Locator { return this.page.getByRole('button', { name: 'Save' })}
   get searchButton(): Locator { return this.page.getByRole('button', { name: 'Search' })}
+  get personalDetailsHeading(): Locator { return this.page.getByRole('heading', { name: 'Personal Details' })}
 }
