@@ -10,7 +10,7 @@ test.describe('TradeMe navigate to website', () => {
     const tradeMe = new TradeMeObjects(page);
     page.setDefaultTimeout(config.timeouts.long); 
     await tradeMe.navigateTo(tradeMeData.urls.sandbox); 
-    await expect(page).toHaveURL(tradeMeData.urls.sandbox);
+    await expect(page).toHaveURL(tradeMeData.urls.sandboxPattern);
     await tradeMe.waitForPageLoad();
   });
 

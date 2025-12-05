@@ -34,7 +34,9 @@ export const tradeMeData = {
     sandbox: 'https://www.tmsandbox.co.nz/a/',
     motors: 'https://www.tmsandbox.co.nz/a/motors',
     usedCars: 'https://www.tmsandbox.co.nz/a/motors/cars/search?vehicle_condition=used',
-    rentalPropertiesUrl : 'https://www.tmsandbox.co.nz/a/property/residential/rent'
+    rentalPropertiesUrl : 'https://www.tmsandbox.co.nz/a/property/residential/rent',
+    // Pattern to handle sandbox redirect (removes /a/ sometimes)
+    sandboxPattern: /tmsandbox\.co\.nz\/(a\/)?$/
   }
 };
 

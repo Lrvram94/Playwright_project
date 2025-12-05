@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { OrangeHrmObjects } from '../../src/pages/OrangeHrmObjects';
 import { orangeHRMData } from '../../src/data/test-data';
 import { config } from '../../src/config/config';
+import { OrangeHrmApiHelper } from '../../src/utils/api-helpers';
 
 test.describe('OrangeHRM Login Test', () => {
   test.beforeEach(async ({ page }) => {
@@ -49,12 +50,55 @@ test.describe('OrangeHRM Login Test', () => {
     await orangeHrm.middleNameInput.fill(randomEmployee.middleName);
     await orangeHrm.lastNameInput.fill(randomEmployee.lastName);
     
-    // Save employee
-    await orangeHrm.saveEmployeeButton.click();
+    // Save employee and wait for navigation
+    await Promise.all([
+      page.waitForURL('**/pim/viewPersonalDetails/**', { timeout: 20000 }),
+      orangeHrm.saveEmployeeButton.click()
+    ]);
+    
     await orangeHrm.waitForPageLoad();
     
     // Verify employee was saved by checking we're on the Personal Details page
     await expect(orangeHrm.personalDetailsHeading).toBeVisible({ timeout: 10000 });
     console.log(`Employee ${randomEmployee.firstName} ${randomEmployee.middleName} ${randomEmployee.lastName} has been successfully created`);
+  });
+});
+
+test.describe('OrangeHRM API Login Tests', () => {
+  test('Login via API and verify in UI', async ({ browser, request }) => {
+    // Step 1: Create a temporary context to perform login
+    const loginContext = await browser.newContext();
+    const loginPage = await loginContext.newPage();
+    
+    // Step 2: Login using API helper (page-based approach for session cookies)
+    const apiHelper = new OrangeHrmApiHelper(request);
+    const cookies = await apiHelper.loginViaPage(loginPage);
+    
+    // Step 3: Get storage state from logged-in context
+    const storageState = await loginContext.storageState();
+    
+    // Close the login context
+    await loginContext.close();
+    
+    // Step 4: Create new context with the logged-in storage state
+    const authenticatedContext = await browser.newContext({ storageState });
+    const page = await authenticatedContext.newPage();
+    
+    // Step 5: Navigate to dashboard (should be logged in)
+    const orangeHrm = new OrangeHrmObjects(page);
+    await orangeHrm.navigateTo(orangeHRMData.urls.dashboard);
+    
+    // Step 6: Verify login success via UI elements
+    await expect(page).toHaveURL(orangeHRMData.urls.dashboard);
+    await expect(orangeHrm.myaccountMenu).toBeVisible();
+    await expect(orangeHrm.pimMenu).toBeVisible();
+    await expect(orangeHrm.timeatworkModule).toBeVisible();
+    
+    console.log('✓ Successfully logged in via API and verified in UI');
+    await orangeHrm.takeScreenshot('API_Login_Dashboard');
+    
+    // Cleanup - close page first, then context
+    await page.close();
+    await authenticatedContext.close();
   });
 });
