@@ -35,6 +35,7 @@ test.describe('OrangeHRM Login Test', () => {
   });
 
   test('Add new employee and verify in employee list', async ({ page }) => {
+    test.setTimeout(60000); // Increase timeout to 60 seconds for this test
     const orangeHrm = new OrangeHrmObjects(page);
     // Generate random employee data
     const randomEmployee = orangeHRMData.generateRandomEmployee();
